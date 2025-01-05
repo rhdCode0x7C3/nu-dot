@@ -1,0 +1,7 @@
+{
+    name: nu-dot
+    type: module
+    version: "0.1.0"
+    description: "A simple dotfiles manager for Nushell"
+    license: "LICENSE"
+}
