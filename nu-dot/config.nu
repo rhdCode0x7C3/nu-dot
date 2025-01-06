@@ -15,7 +15,11 @@ export def ensure-config [] {
     let filepath = config-filepath
     if not ($filepath | path exists) {
         mkdir (config-path)
-        { title: "nu-dot config", dirs: { source: "", dest: "", } }
+        {
+            title: "nu-dot config",
+            dirs: { source: "", dest: "", }
+            items: {}
+        }
         | to nuon --indent 2
         | save $filepath
     }
