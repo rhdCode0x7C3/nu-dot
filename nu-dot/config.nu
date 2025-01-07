@@ -17,7 +17,7 @@ export def ensure-config [] {
         mkdir (config-path)
         {
             title: "nu-dot config",
-            dirs: { source: "", dest: "", }
+            dirs: { src: "", dest: "", }
             items: {}
         }
         | to nuon --indent 2

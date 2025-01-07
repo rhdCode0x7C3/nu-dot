@@ -1,5 +1,5 @@
 # nu-dot/dir.nu
-# Set source and destination directories
+# Set src and destination directories
 
 export def show [] {
     use ./config.nu *
@@ -9,7 +9,7 @@ export def show [] {
 }
 
 def dir-type [] {
-    [source dest]
+    [src dest]
 }
 
 export def set [type: string@dir-type, path: string] {
@@ -17,8 +17,8 @@ export def set [type: string@dir-type, path: string] {
     let expanded_path = ($path | path expand)
     open (config-filepath)
     | match $type {
-        source => {
-            upsert dirs.source $expanded_path
+        src => {
+            upsert dirs.src $expanded_path
         }
         dest => {
             upsert dirs.dest $expanded_path
