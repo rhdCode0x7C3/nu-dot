@@ -1,6 +1,6 @@
 # nu-dot/symlink.nu
 
-export def open-conf [] {
+def open-conf [] {
     use ./config.nu *
 
     if (config-filepath | path exists) {
@@ -13,7 +13,7 @@ export def open-conf [] {
 
 def dir-type [] { [src dest] }
 
-export def get-dir [dir: string@dir-type] {
+def get-dir [dir: string@dir-type] {
     let conf = open-conf
     let dirs = $conf.dirs
     match $dir {
@@ -33,36 +33,29 @@ export def get-dir [dir: string@dir-type] {
     }
 }
 
-export def generate-link-items [] {
-    let src_files = ls (get-dir src) | get name
-    let dest_dir = (get-dir dest)
-    let link_dests = $src_files | each {$"($dest_dir)/(basename $in)"}
-    print $link_dests
-}
-
 def get-dest [src: string dest_dir: string] {
     ($"($dest_dir)/(basename $src)")
 }
 
-export def get-symlink-status [src: string dest: string] {
-    # Verify the destination file's parent directory exists
+def dest-ready [dest: string] {
     let dest_dir_exists = ($dest | path dirname | path exists)
-    let dest_exists = ($dest | path exists)
-    let dest_info = if ($dest_exists) {
-        ls -l ($dest | path dirname) | where name =~ ($dest | path basename)
-    }
-    # let is_symlink = if ($dest_exists) { $dest_info.type.0 == symlink }
-    # print $target_is_src
-    if ($dest_dir_exists and not $dest_exists) {
-        "Ready"
-    } else {
-        let target_is_src = $dest_info.target.0 == $src
-        if ($target_is_src) {
-            "Linked"
-        } else {
-            "Conflict"
-        }
-    }
+    $dest_dir_exists and (not ($dest | path exists))
+}
+
+def get-file-info [path: string] {
+    ls -l ($path | path dirname) | where name =~ ($path | path basename)
+}
+
+def correctly-linked [src: string dest: string] {
+    if not ($dest | path exists) { return false }
+    let dest_info = (get-file-info $dest)
+    $dest_info.target.0 == $src
+}
+
+def get-symlink-status [src: string dest: string] {
+    if (dest-ready $dest) { return "Ready" }
+    if (correctly-linked $src $dest) { return "Linked" }
+    "Conflict"
 }
 
 export def build-items-list [] {
@@ -74,7 +67,7 @@ export def build-items-list [] {
             src: ($in.name | path expand)
             dest: (get-dest $in.name $dest_dir)
             type: ($in.type)
-            # status: get-symlink-status 
+            status: (get-symlink-status $in.name (get-dest $in.name $dest_dir))
         }
     }
     open-conf 
