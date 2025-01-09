@@ -1,4 +1,4 @@
-# nu-dot
+# nudot
 A simple dotfiles manager for Nushell
 
 ## Scope

@@ -1,4 +1,4 @@
-# nu-dot/symlink.nu
+# nudot/symlink.nu
 
 export def open-conf [] {
     use ./config.nu *

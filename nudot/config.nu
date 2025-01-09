@@ -1,4 +1,4 @@
-# nu-dot/config.nu
+# nudot/config.nu
 # Config file management
 
 export def system-config-path [] {
@@ -9,13 +9,13 @@ export def system-config-path [] {
 }
 
 export def config-path [] {
-    system-config-path | path join "nu-dot"
+    system-config-path | path join "nudot"
 }
 
 export def config-filepath [] { config-path | path join config.nuon }
 
 export def default-config [] {
-    let app_name = "nu-dot"
+    let app_name = "nudot"
     let app_version = "0.1.0"
     let default_src = "" # Empty until set by user
     let default_dest = system-config-path

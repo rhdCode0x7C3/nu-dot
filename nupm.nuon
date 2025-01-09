@@ -1,5 +1,5 @@
 {
-    name: nu-dot
+    name: nudot
     type: module
     version: "0.1.0"
     description: "A simple dotfiles manager for Nushell"

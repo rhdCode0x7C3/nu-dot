@@ -1,4 +1,4 @@
-# nu-dot/dir.nu
+# nudot/dir.nu
 # Set src and destination directories
 
 export def show [] {
