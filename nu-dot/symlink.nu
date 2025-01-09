@@ -1,6 +1,6 @@
 # nu-dot/symlink.nu
 
-def open-conf [] {
+export def open-conf [] {
     use ./config.nu *
 
     if (config-filepath | path exists) {
@@ -15,17 +15,18 @@ def dir-type [] { [src dest] }
 
 def get-dir [dir: string@dir-type] {
     let conf = open-conf
-    let dirs = $conf.dirs
+    let src = $conf.defaults.src
+    let dest = $conf.defaults.dest
     match $dir {
         src => {
-            if ($dirs.src | is-empty) {
+            if ($src | is-empty) {
                 error make { msg: "Source directory not defined.\n Run \"set src <path>\""}
-            } else {return $dirs.src}
+            } else {return $src}
         }
         dest => {
-            if ($dirs.dest | is-empty) {
+            if ($dest | is-empty) {
                 error make { msg: "Destination directory not defined.\n Run \"set dest <path>\"" }
-            } else {return $dirs.dest}
+            } else {return $dest}
         }
         _ => {
             error make { msg: "Invalid argument" }
@@ -33,7 +34,7 @@ def get-dir [dir: string@dir-type] {
     }
 }
 
-def get-dest [src: string dest_dir: string] {
+export def get-dest [src: string dest_dir: string] {
     ($"($dest_dir)/(basename $src)")
 }
 
@@ -58,20 +59,26 @@ def get-symlink-status [src: string dest: string] {
     "Conflict"
 }
 
-export def build-items-list [] {
+export def build-file-record [file: record dest_dir: string] {
+    return {
+        src: ($file.name | path expand)
+        dest: (get-dest $file.name $dest_dir)
+        status: (get-symlink-status $file.name (get-dest $file.name $dest_dir))
+    }
+}
+
+export def scan-src-dir [] {
     use ./config.nu *
     let dest_dir = (get-dir dest)
-    let items_list = ls (get-dir src)
-    | each {
+    let files_record = ls -s (get-dir src)
+    | each {|entry|
         {
-            src: ($in.name | path expand)
-            dest: (get-dest $in.name $dest_dir)
-            type: ($in.type)
-            status: (get-symlink-status $in.name (get-dest $in.name $dest_dir))
+        $entry.name: (build-file-record ($in | into record) $dest_dir)
         }
-    }
-    open-conf 
-    | upsert items $items_list 
-    | to nuon --indent 2 
-    | save -f (config-filepath)
+    } | reduce {|it, acc| $acc | merge $it}
+
+        open-conf
+        | upsert files $files_record
+        | to nuon --indent 2 | inspect
+        | save -f (config-filepath)
 }

@@ -18,10 +18,10 @@ export def set [type: string@dir-type, path: string] {
     open (config-filepath)
     | match $type {
         src => {
-            upsert dirs.src $expanded_path
+            upsert defaults.src $expanded_path
         }
         dest => {
-            upsert dirs.dest $expanded_path
+            upsert defaults.dest $expanded_path
         }
     }
     | to nuon --indent 2

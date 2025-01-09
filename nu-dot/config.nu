@@ -1,25 +1,42 @@
 # nu-dot/config.nu
 # Config file management
 
-export def config-path [] {
+export def system-config-path [] {
     if 'XDG_CONFIG_HOME' in $env {
-        $env.XDG_CONFIG_HOME | path join "nu-dot"
+        $env.XDG_CONFIG_HOME
     }
-    $env.HOME | path join ".config/nu-dot"
+    $env.HOME | path join ".config"
+}
 
+export def config-path [] {
+    system-config-path | path join "nu-dot"
 }
 
 export def config-filepath [] { config-path | path join config.nuon }
+
+export def default-config [] {
+    let app_name = "nu-dot"
+    let app_version = "0.1.0"
+    let default_src = "" # Empty until set by user
+    let default_dest = system-config-path
+
+    {
+        title: $app_name
+        version: $app_version
+        defaults: {
+            src: $default_src
+            dest: $default_dest
+        }
+        files: {}
+    }
+}
+
 
 export def ensure-config [] {
     let filepath = config-filepath
     if not ($filepath | path exists) {
         mkdir (config-path)
-        {
-            title: "nu-dot config",
-            dirs: { src: "", dest: "", }
-            items: {}
-        }
+        default-config
         | to nuon --indent 2
         | save $filepath
     }
