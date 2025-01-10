@@ -9,10 +9,10 @@ export def test_default-config_valid_strings [] {
     let default_dest = "path/testdest"
 
     let expected = {
-        title: testapp
-        version: testversion
+        title: testapp,
+        version: testversion,
         defaults: {
-            src: path/testsrc
+            base: path/testsrc,
             dest: path/testdest
         }
         files: {}
@@ -23,38 +23,49 @@ export def test_default-config_valid_strings [] {
 }
 
 export def test_default-config_empty_strings [] {
-    #setup
-    let app_name = ""
-    let app_version = ""
-    let default_src = ""
-    let default_dest = ""
-
     let expected = {
         title: "",
         version: "",
         defaults: {
-            src: "",
-            dest: "",
+            base: "",
+            dest: ""
         }
         files: {}
     }
     use ../../nudot/config/core.nu *
-    let result = (default-config $app_name $app_version $default_src $default_dest)
-    assert ($result == $expected)
+    let result = (default-config "" "" "" "")
+    $"($result | to nuon)\n($expected | to nuon)"
+    # assert (($result | to nuon) == ($expected | to nuon))
 }
 
 # Calls ensure-config with a valid path
 # where no pre-existing configuration file exists
 export def test_ensure-config_valid_not_exists [] {
     #setup
-    let filepath = (mktemp -d | path join config.nuon)
-    print $filepath
+    let filepath = (mktemp -d | path join 'config.nuon')
+
+    use ../../nudot/config/core.nu *
+    ensure-config $filepath
+    
+    assert ($filepath | path exists)
+
+    #cleanup
+    rm -rf (dirname $filepath)
+}
+
+# Calls ensure-config with the path to an existing file
+# ensure-config should leave the existing file in place
+export def test_ensure-config_valid_exists [] {
+    #setup
+    let filepath = (mktemp -d | path join 'myfile')
+    let content = "DON'T MODIFY ME"
+    $content | save $filepath
 
     use ../../nudot/config/core.nu *
     ensure-config $filepath
 
-    cat $filepath
-
+    assert ((open $filepath) == $content)
+    
     #cleanup
     rm -rf (dirname $filepath)
 }

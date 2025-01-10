@@ -1,7 +1,7 @@
 # nudot/config/core.nu
 # Config file operations
 
-# Pure function
+# Returns a default config
 export def default-config [
     app_name: string,
     app_version: string,
@@ -15,29 +15,20 @@ export def default-config [
             base: $default_src
             dest: $default_dest
         }
-        overrides: {
-            {
-                # Not implemented in this version
-            }
-        }
         files: {}
     }
 }
 
-# Wrapper with system defaults
-def system-default-config [] {
-    use ./paths.nu *
-    default-config "nudot" "0.1.0" "" (system-config-path)
-}
-
-# Private function
 # Ensures a config file exists
 # Creates one if not
 export def ensure-config [filepath: string] {
     if not ($filepath | path exists) {
         try {
-            mkdir (dirname ($filepath))
-            system-default-config
+            if not (dirname ($filepath) | path exists) {
+                mkdir (dirname ($filepath))
+            }
+            use ./paths.nu *
+            (default-config "nudot" "0.1.0" (config-path $env) "")
             | to nuon --indent 2
             | save $filepath
         } catch {
@@ -45,10 +36,3 @@ export def ensure-config [filepath: string] {
         }
     }
 }
-
-# Wrapper for system use
-export def system-ensure-config [] {
-    use ./paths.nu *
-    ensure-config (system-config-path)
-}
-
