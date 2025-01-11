@@ -1,3 +1,5 @@
+            # module manifest
+            # module manifest
 # nudot/config/core.nu
 # Config file operations
 
@@ -22,13 +24,16 @@ export def default-config [
 # Ensures a config file exists
 # Creates one if not
 export def ensure-config [filepath: string] {
+    use ../app_metadata.nu *
+    let app_name = (manifest (find-nupm .) name)
+    let app_version = (manifest (find-nupm .) version)
     if not ($filepath | path exists) {
         try {
             if not (dirname ($filepath) | path exists) {
                 mkdir (dirname ($filepath))
             }
             use ./paths.nu *
-            (default-config "nudot" "0.1.0" (config-path $env) "")
+            (default-config $app_name $app_version (config-path $env) "")
             | to nuon --indent 2
             | save $filepath
         } catch {
