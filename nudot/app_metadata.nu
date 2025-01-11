@@ -4,11 +4,6 @@ def params [] {
     [name type version description license]
 } 
 
-# Relative path to the nupm manifest file
-def filepath [] {
-    ['../nupm.nuon']
-}
-
 # Searches recursively up the filetree for a nupm.nuon file
 export def find-nupm [dir: string] {
     let abs_dir = ($dir | path expand)
@@ -25,7 +20,7 @@ export def find-nupm [dir: string] {
 
 # Returns metadata from a manifest file
 # Usually nupm.nuon
-export def manifest [filepath: string@filepath param: string@params] {
+export def manifest [filepath: string param: string@params] {
     if ($filepath | path exists) {
         let manifest = (open $filepath)
         $manifest | get $param
