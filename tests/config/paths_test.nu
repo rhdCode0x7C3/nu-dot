@@ -1,9 +1,10 @@
 # tests/config/paths_test.nu
-use std assert
+use std [assert log]
 
 export def test_config-path_with_xdg [] {
     # setup
     let test_env = {
+        HOME: "some/other/path"
         XDG_CONFIG_HOME: "some/path"
     }
     use ../../nudot/config/paths.nu *
@@ -19,6 +20,7 @@ export def test_config-path_without_xdg [] {
     }
     use ../../nudot/config/paths.nu *
     let result = (config-path $test_env)
+    log debug $result
     assert ($result == "some/path/.config")
     
 }
@@ -38,6 +40,7 @@ export def test_config-path_null_xdg [] {
 export def test_config-filepath [] {
     # setup
     let test_env = {
+        HOME : "some/path"
         XDG_CONFIG_HOME: "some/path",
     }
     use ../../nudot/config/paths.nu *

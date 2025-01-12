@@ -1,14 +1,11 @@
 # nudot/config/path.nu
 # Path management
 
-# Returns the config path for some arbitrary environment
+# Returns the config path for a given environment
 # For system config use env_vars = $env
+# $env.HOME must be set on Windows systems
 export def config-path [env_vars: record] {
-    if ('XDG_CONFIG_HOME' in $env_vars) and (not ($env_vars.XDG_CONFIG_HOME == null)) {
-       return $env_vars.XDG_CONFIG_HOME
-    } else {
-        $env_vars.HOME | path join ".config"
-    }
+    $env_vars | get --ignore-errors XDG_CONFIG_HOME | default ($env_vars.HOME | path join ".config")
 }
 
 # Returns the path of the nudot config file

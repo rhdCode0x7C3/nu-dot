@@ -5,20 +5,14 @@ export def test_default-config_valid_strings [] {
     #setup
     let app_name = "testapp"
     let app_version = "testversion"
-    let default_src = "path/testsrc"
-    let default_dest = "path/testdest"
 
     let expected = {
         title: testapp,
         version: testversion,
-        defaults: {
-            base: path/testsrc,
-            dest: path/testdest
-        }
-        files: {}
+        base_dirs: {}
     }
     use ../../nudot/config/core.nu *
-    let result = (default-config $app_name $app_version $default_src $default_dest)
+    let result = (default-config $app_name $app_version)
     assert ($result == $expected)
 }
 
@@ -26,14 +20,10 @@ export def test_default-config_empty_strings [] {
     let expected = {
         title: "",
         version: "",
-        defaults: {
-            base: "",
-            dest: ""
-        }
-        files: {}
+        base_dirs: {}
     }
     use ../../nudot/config/core.nu *
-    let result = (default-config "" "" "" "")
+    let result = (default-config "" "")
     $"($result | to nuon)\n($expected | to nuon)"
     # assert (($result | to nuon) == ($expected | to nuon))
 }
