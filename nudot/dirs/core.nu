@@ -1,22 +1,23 @@
 # dirs/core.nu
-# Operations on base and destination directories
+# Operations on base directories
 
 def base_dir-status-completion [] {
     [active inactive]
 }
 
+# 
 export def create-base_dir-record [
     base: string
     status: string@base_dir-status-completion
     key?: string
-    ] {
+] {
     let valid_key = match $key {
         null => {
             ($env.PWD | path basename)
         }
         _ => {
             $key
-    }
+        }
     }
     { $valid_key: {
         base: ($base | path expand)
@@ -68,7 +69,7 @@ export def add [
     }
 }
 
-export def remove [] {
+export def remove [dir: string] {
     let dir_or_pwd = ($dir | default $env.PWD)
     use ../helpers.nu guard
     guard [
