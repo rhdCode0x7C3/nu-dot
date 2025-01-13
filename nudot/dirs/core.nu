@@ -19,7 +19,6 @@ export def create-base_dir-record [
     }
     }
     { $valid_key: {
-        # name: $valid_key
         base: ($base | path expand)
         dest: null
         status: $status
@@ -39,7 +38,7 @@ export def ensure-nudot-file [dir: string] {
     $nudot_file_path
 }
 
-# Adds a path to nudot's list of base directories
+# Adds a single path to nudot's list of base directories
 # Parameters:
 # - dir: Path to the base directory. Defaults to PWD if not specified
 # Flags:
@@ -61,15 +60,21 @@ export def add [
         # Merge it into the configuration file
         use ../config/paths.nu config-filepath
         use ../config/core.nu ensure-config
-        let fp = (ensure-config (config-filepath $env))
-        # let merged_base_dirs = { open $fp
-        # | get base_dirs
-        # | merge $record }
-        # let updated_config = (open $fp
-        # | upsert base_dirs $merged_base_dirs)
-        # $updated_config
+        let fp = ensure-config (config-filepath $env)
         open $fp
-        | upsert base_dirs ($fp.base_dirs | merge $record)
+        | upsert base_dirs ($in.base_dirs | merge $record)
+        | to nuon -i 2
+        | save -f $fp
+    }
+}
+
+export def remove [] {
+    let dir_or_pwd = ($dir | default $env.PWD)
+    use ../helpers.nu guard
+    guard [
+        ($dir_or_pwd | path join nudot.nuon | path exists)
+    ] {
+
     }
 }
 

@@ -24,8 +24,10 @@ export def default-config [
 # - filepath: string
 export def ensure-config [filepath: string] {
     use ../app_metadata.nu *
-    let app_name = (manifest (find-nupm .) name)
-    let app_version = (manifest (find-nupm .) version)
+    # let app_name = (manifest (find-nupm .) name)
+    # let app_version = (manifest (find-nupm .) version)
+    let app_name = "nudot"
+    let app_version = "0.1.0"
     if not ($filepath | path exists) {
         try {
             if not (dirname ($filepath) | path exists) {
@@ -38,6 +40,6 @@ export def ensure-config [filepath: string] {
         } catch {
             error make {msg: $"Unable to create config at ($filepath)"}
         }
-        $filepath
     }
+    $filepath
 }
