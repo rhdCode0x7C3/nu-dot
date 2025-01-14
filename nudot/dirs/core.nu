@@ -26,13 +26,13 @@ export def create-base_dir-record [
     } }
 }
 
-# Check if a nudot.nuon file exists in a directory
+# Check if a base.nuon file exists in a directory
 # Create one if not.
 # Parameters:
 # - dir: string Must be a valid directory path
-# Return: path to existing or newly created nudot.nuon file
+# Return: path to existing or newly created base.nuon file
 export def ensure-nudot-file [dir: string] {
-    let nudot_file_path = ($dir | path join 'nudot.nuon')
+    let nudot_file_path = ($dir | path join 'base.nuon')
     if not ($nudot_file_path | path exists) {
         touch $nudot_file_path
     }
@@ -49,14 +49,14 @@ export def add [
     --name (-n): string
 ] {
     # Input validation
-    let dir_or_pwd = ($dir | default $env.PWD)
+    let dir = ($dir | default $env.PWD)
     use ../helpers.nu guard
     guard [
-        ($dir_or_pwd | path exists)
-        (($dir_or_pwd | path type) == dir)
+        ($dir | path exists)
+        (($dir | path type) == dir)
     ] {
         # Create the record
-        let record = (create-base_dir-record $dir_or_pwd active $name)
+        let record = (create-base_dir-record $dir active $name)
 
         # Merge it into the configuration file
         use ../config/paths.nu config-filepath
@@ -70,10 +70,10 @@ export def add [
 }
 
 export def remove [dir: string] {
-    let dir_or_pwd = ($dir | default $env.PWD)
+    let dir = ($dir | default $env.PWD)
     use ../helpers.nu guard
     guard [
-        ($dir_or_pwd | path join nudot.nuon | path exists)
+        ($dir | path join base.nuon | path exists)
     ] {
 
     }

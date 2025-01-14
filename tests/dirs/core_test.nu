@@ -4,7 +4,7 @@ use std [assert log]
 export def test_ensure-nudot-file_returns_correct_path [] {
     # setup
     let temp = (mktemp -d)
-    let expected = ($temp | path join 'nudot.nuon')
+    let expected = ($temp | path join 'base.nuon')
     log debug $expected
 
     # test

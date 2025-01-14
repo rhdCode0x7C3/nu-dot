@@ -39,4 +39,4 @@ A simple dotfiles manager for Nushell
 - [ ] Command completion
 
 ### Completed Column ✓
-- [x] Completed task title  
+- [x] Define config and base schema in types.nu

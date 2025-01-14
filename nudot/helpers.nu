@@ -1,7 +1,7 @@
 # helpers.nu
 
-export def guard [guards: list func: closure] {
+export def guard [guards: list do: closure else: closure] {
     if ($guards | all {$in == true}) {
-        do $func
-    } else { null }
+        do $do
+    } else { do $else }
 }

@@ -13,7 +13,7 @@ export def resolve-destination [r: record] {
         use ./core.nu *
         use ../config/paths.nu *
         let src = $r | get ($r | columns | get 0) | get src 
-        let base_name = (open ($src | path dirname | path join 'nudot.nuon') | get name)
+        let base_name = (open ($src | path dirname | path join 'base.nuon') | get name)
         let entry = (open (config-filepath)) | get base_dirs | get $base_name
         $entry.dest
     }
