@@ -1,0 +1,8 @@
+{
+    name: {
+        src: 'path/to/src',
+        dest: 'path/to/dest',
+        status: Ready,
+        tracked: true,
+    }
+}

@@ -8,7 +8,7 @@ export def test_guard_all-true [] {
 
     # test
     use ../nudot/helpers.nu *
-    let result = (guard $guards $func)
+    let result = (guard $guards $func {})
 
     assert ($result == 6)
 }
@@ -20,7 +20,7 @@ export def test_guard_not-true [] {
 
     # test
     use ../nudot/helpers.nu *
-    let result = (guard $guards $func)
+    let result = (guard $guards $func {})
 
     assert ($result == null)
 }

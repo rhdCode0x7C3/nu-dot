@@ -66,7 +66,7 @@ export def add [
         | upsert base_dirs ($in.base_dirs | merge $record)
         | to nuon -i 2
         | save -f $fp
-    }
+    } {}
 }
 
 export def remove [dir: string] {
@@ -76,7 +76,7 @@ export def remove [dir: string] {
         ($dir | path join base.nuon | path exists)
     ] {
 
-    }
+    } {}
 }
 
 export def show [env_vars] {

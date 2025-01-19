@@ -1,0 +1,7 @@
+{
+  basedir: {
+    base: /path/to/base,
+    dest: /path/to/dest,
+    status: active
+  }
+}
